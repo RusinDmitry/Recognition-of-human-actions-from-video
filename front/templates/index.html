@@ -2,93 +2,141 @@
 <html>
 <head>
 <style>
-body {
-  text-align: center;
-  font-family: "Arial";
-}
+  body {
+    text-align: center;
+    font-family: "Arial";
+  }
 
-h1 {
-  color: black;
-  font-family: "Inter";
-}
+  h1 {
+    color: black;
+    font-family: "Inter";
+  }
 
-form {
-  margin: auto;
-  width: 50%;
-}
+  form {
+    margin: auto;
+    width: 50%;
+  }
 
-input[type="file"] {
-  display: none; /* скрываем поле выбора файла */
-}
+  input[type="file"] {
+    display: none; /* удаление кнопки выбора файла */
+  }
 
-.custom-file-upload, .custom-submit-button {
-  display: inline-block;
-  border: 1px solid #ccc;
-  background: white;
-  padding: 10px 20px; /* увеличиваем отступы для обеих кнопок */
-  cursor: pointer;
-  margin: 10px auto;
-  font-size: 16px; /* устанавливаем одинаковый размер шрифта для обеих кнопок */
-  border-radius: 5px; /* добавляем скругление углов */
-}
+  .custom-submit-button {
+    display: inline-block;
+    border: 1px solid #ccc;
+    background: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 10px auto;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: #42aaff;
+    color: white;
+  }
 
-.custom-submit-button {
-  background-color: #42aaff;
-  color: white;
-}
+  .custom-submit-button:active {
+    background-color: #3388cc;
+    color: #fff;
+  }
 
-.custom-file-upload:active, .custom-submit-button:active {
-  background-color: #3388cc;
-  color: #fff;
-}
+  h2 {
+    color: black;
+    font-family: "Inter";
+  }
 
-#file-name {
-  margin-top: 10px;
-  font-family: "Arial";
-}
+  p {
+    margin-top: 10px;
+    font-family: "Arial";
+  }
 
-h2 {
-  color: black;
-  font-family: "Inter";
-}
+  .result-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-family: "Inter";
+    font-size: 18px;
+    border-radius: 5px;
+  }
 
-p {
-  margin-top: 10px;
-  font-family: "Arial";
-}
+  .result-box:nth-child(1) {
+    background-color: #42aaff; /* цвет как у кнопки */
+    color: white; /* цвет текста */
+  }
 
-.result-box {
-  border: 1px solid #ccc;
-  background-color: #f0f0f0;
-  padding: 5px; /* уменьшаем размер прямоугольников */
-  margin-bottom: 10px;
-  font-family: "Inter";
-  font-size: 18px; /* увеличиваем размер шрифта */
-  border-radius: 5px; /* добавляем закругление углов */
-}
+  video {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .custom-drop-area {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer; /* добавляем стиль для указания, что область поддерживает перетаскивание */
+  }
+
+  .custom-drop-area:hover {
+    background-color: #f0f0f0;
+  }
+
+  #video-name {
+    margin-top: 10px;
+    font-family: "Arial";
+  }
+
 </style>
 </head>
 <body>
-  <h1>Загрузите видео</h1>
-  <form action="/upload-video/" method="post" enctype="multipart/form-data">
-    <label for="file-upload" class="custom-file-upload">Выбрать файл</label>
-    <input id="file-upload" type="file" name="file" onchange="showFileName(this)">
-    <button type="submit" class="custom-submit-button">Загрузить и проанализировать</button>
-    <p id="file-name"></p>
+  <h1>Распознавание действий человека по видео</h1>
+  <p>Данный сервис позволяет загружать видеофайлы<br> и с помощью искусственного интеллекта распознавать действия человека на нем.</p>
+  <form id="upload-form" action="/upload-video/" method="post" enctype="multipart/form-data" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+    <div id="drop-area" class="custom-drop-area">
+      Перетащите сюда видеофайл для загрузки
+    </div>
+    <video controls id="video-preview" style="display:none;"></video>
+    <p id="video-name"></p>
+    <button type="submit" class="custom-submit-button">Проанализировать видео</button>
+    <input id="file-upload" type="file" name="file" onchange="showVideo(this)" style="display: none;">
   </form>
+  <div id="results">
+    {% if result %}
+      <h2>Результат:</h2>
+      {% for item in result %}
+        {% if loop.first %}
+          <div class="result-box" style="background-color: #42aaff; color: white;">
+        {% else %}
+          <div class="result-box">
+        {% endif %}
+          <p>{{ item }}</p>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
   <script>
-    function showFileName(input) {
-      document.getElementById('file-name').innerText = input.files[0].name;
+    function showVideo(input) {
+      var file = input.files[0];
+      var video = document.getElementById('video-preview');
+      var videoURL = URL.createObjectURL(file);
+      video.src = videoURL;
+      video.style.display = "block";
+      document.getElementById('video-name').innerText = input.files[0].name; // Показать имя файла под видео
+    }
+    
+    function handleDragOver(event) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "copy";
+    }
+    
+    function handleDrop(event) {
+      event.preventDefault();
+      var file = event.dataTransfer.files[0];
+      var input = document.getElementById('file-upload');
+      input.files = event.dataTransfer.files;
+      showVideo(input);
     }
   </script>
-  {% if result %}
-  <h2>Результат:</h2>
-  {% for item in result %}
-  <div class="result-box">
-    <p>{{ item }}</p>
-  </div>
-  {% endfor %}
-  {% endif %}
 </body>
 </html>
 
