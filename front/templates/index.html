@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Загрузите видео</h1>
+    <form action="/upload-video/" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Загрузить и обработать">
+    </form>
+    {% if result %}
+        <h2>Результат:</h2>
+        <p>{{ result }}</p>
+    {% endif %}
+</body>
+</html>
