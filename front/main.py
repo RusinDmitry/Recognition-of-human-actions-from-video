@@ -17,7 +17,7 @@ from pytorchvideo.transforms import (
     ShortSideScale,
     UniformTemporalSubsample
 )
-import torch
+#import torch
 import shutil
 
 import os
@@ -115,6 +115,20 @@ async def upload_video(request: Request, file: UploadFile = File(...)):
     preds = post_act(preds)
     pred_classes = preds.topk(k=5).indices[0]
     pred_class_names = [kinetics_id_to_classname[int(i)] for i in pred_classes]
+
+    tensor = preds.topk(k=5).values[0]
+
+    array = tensor.tolist()
+
+
+    total = sum(array)
+    relative_values = [(x / total) * 100 for x in array]
+
+    new_mas = [f'{pred_class_names[0]} - {round(relative_values[0], 1)} %',
+              f'{pred_class_names[1]} - {round(relative_values[1], 1)} %',
+              f'{pred_class_names[2]} - {round(relative_values[2], 1)} %',
+              f'{pred_class_names[3]} - {round(relative_values[3], 1)} %',
+              f'{pred_class_names[4]} - {round(relative_values[4], 1)} %']
     
 
 
@@ -128,5 +142,6 @@ async def upload_video(request: Request, file: UploadFile = File(...)):
 
     # TODO: Преобразуйте видео и получите результат
 
+
     result = "Текстовый результат вашей модели"
-    return templates.TemplateResponse("index.html", {"request": request, "result": pred_class_names})
+    return templates.TemplateResponse("index.html", {"request": request, "result": new_mas})
