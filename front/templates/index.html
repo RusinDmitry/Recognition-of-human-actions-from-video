@@ -47,13 +47,22 @@ input[type="file"] {
 }
 
 h2 {
-  color: Black;
+  color: black;
   font-family: "Inter";
 }
 
 p {
   margin-top: 10px;
   font-family: "Arial";
+}
+
+.result-box {
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  padding: 5px; /* уменьшаем размер прямоугольников */
+  margin-bottom: 10px;
+  font-family: "Inter";
+  font-size: 18px; /* увеличиваем размер шрифта */
 }
 </style>
 </head>
@@ -72,7 +81,11 @@ p {
   </script>
   {% if result %}
   <h2>Результат:</h2>
-  <p>{{ result }}</p>
+  {% for item in result %}
+  <div class="result-box">
+    <p>{{ item }}</p>
+  </div>
+  {% endfor %}
   {% endif %}
 </body>
 </html>
