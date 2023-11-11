@@ -1,14 +1,79 @@
 <!DOCTYPE html>
 <html>
+<head>
+<style>
+body {
+  text-align: center;
+  font-family: "Arial";
+}
+
+h1 {
+  color: black;
+  font-family: "Inter";
+}
+
+form {
+  margin: auto;
+  width: 50%;
+}
+
+input[type="file"] {
+  display: none; /* скрываем поле выбора файла */
+}
+
+.custom-file-upload, .custom-submit-button {
+  display: inline-block;
+  border: 1px solid #ccc;
+  background: white;
+  padding: 10px 20px; /* увеличиваем отступы для обеих кнопок */
+  cursor: pointer;
+  margin: 10px auto;
+  font-size: 16px; /* устанавливаем одинаковый размер шрифта для обеих кнопок */
+}
+
+.custom-submit-button {
+  background-color: #42aaff;
+  color: white;
+}
+
+.custom-file-upload:active, .custom-submit-button:active {
+  background-color: #3388cc;
+  color: #fff;
+}
+
+#file-name {
+  margin-top: 10px;
+  font-family: "Arial";
+}
+
+h2 {
+  color: Black;
+  font-family: "Inter";
+}
+
+p {
+  margin-top: 10px;
+  font-family: "Arial";
+}
+</style>
+</head>
 <body>
-    <h1>Загрузите видео</h1>
-    <form action="/upload-video/" method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <input type="submit" value="Загрузить и обработать">
-    </form>
-    {% if result %}
-        <h2>Результат:</h2>
-        <p>{{ result }}</p>
-    {% endif %}
+  <h1>Загрузите видео</h1>
+  <form action="/upload-video/" method="post" enctype="multipart/form-data">
+    <label for="file-upload" class="custom-file-upload">Выбрать файл</label>
+    <input id="file-upload" type="file" name="file" onchange="showFileName(this)">
+    <button type="submit" class="custom-submit-button">Загрузить и проанализировать</button>
+    <p id="file-name"></p>
+  </form>
+  <script>
+    function showFileName(input) {
+      document.getElementById('file-name').innerText = input.files[0].name;
+    }
+  </script>
+  {% if result %}
+  <h2>Результат:</h2>
+  <p>{{ result }}</p>
+  {% endif %}
 </body>
 </html>
+
