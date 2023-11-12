@@ -17,14 +17,15 @@ from pytorchvideo.transforms import (
     ShortSideScale,
     UniformTemporalSubsample
 )
-#import torch
 import shutil
 
 import os
 
+map_location = torch.device('cpu') if torch.cuda.is_available() else 'cpu'
+model = torch.load('model_ft_pc20.pt', map_location=map_location)
+
 
 # Загрузите вашу модель
-model = torch.load("good_model.pt", map_location=torch.device("cpu"))
 model.eval()
 
 # Определите преобразования, которые необходимы для подготовки видео к входу модели
@@ -53,7 +54,7 @@ async def upload_video(request: Request, file: UploadFile = File(...)):
 
     
 
-    model = torch.load('good_model.pt')
+    #model = torch.load('good_model.pt')
 
 
     side_size = 256
@@ -97,8 +98,10 @@ async def upload_video(request: Request, file: UploadFile = File(...)):
     inputs = video_data["video"]
 
 
+
+
     
-    json_filename = "kinetics_classnames.json"
+    json_filename = "classes.json"
 
     with open(json_filename, "r") as f:
         kinetics_classnames = json.load(f)
@@ -131,6 +134,7 @@ async def upload_video(request: Request, file: UploadFile = File(...)):
               f'{pred_class_names[4]} - {round(relative_values[4], 1)} %']
     
 
+    new_mas2 = new_mas[0:5]
 
     file_path = "file.avi"
 
@@ -144,4 +148,4 @@ async def upload_video(request: Request, file: UploadFile = File(...)):
 
 
     result = "Текстовый результат вашей модели"
-    return templates.TemplateResponse("index.html", {"request": request, "result": new_mas})
+    return templates.TemplateResponse("index.html", {"request": request, "result": new_mas2})
