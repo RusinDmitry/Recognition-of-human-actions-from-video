@@ -1,96 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-  body {
-    text-align: center;
-    font-family: "Arial";
-  }
+  <style>
+    body {
+      text-align: center;
+      font-family: "Arial";
+    }
 
-  h1 {
-    color: black;
-    font-family: "Inter";
-  }
+    h1 {
+      color: black;
+      font-family: "Inter";
+    }
 
-  form {
-    margin: auto;
-    width: 50%;
-  }
+    form {
+      margin: auto;
+      width: 50%;
+    }
 
-  input[type="file"] {
-    display: none; /* удаление кнопки выбора файла */
-  }
+    input[type="file"] {
+      display: none; 
+    }
 
-  .custom-submit-button {
-    display: inline-block;
-    border: 1px solid #ccc;
-    background: white;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin: 10px auto;
-    font-size: 16px;
-    border-radius: 5px;
-    background-color: #42aaff;
-    color: white;
-  }
+    .custom-submit-button {
+      display: inline-block;
+      border: 1px solid #ccc;
+      background: white;
+      padding: 10px 20px;
+      cursor: pointer;
+      margin: 10px auto;
+      font-size: 16px;
+      border-radius: 5px;
+      background-color: #42aaff;
+      color: white;
+    }
 
-  .custom-submit-button:active {
-    background-color: #3388cc;
-    color: #fff;
-  }
+    .custom-submit-button:active {
+      background-color: #3388cc;
+      color: #fff;
+    }
 
-  h2 {
-    color: black;
-    font-family: "Inter";
-  }
+    h2 {
+      color: black;
+      font-family: "Inter";
+    }
 
-  p {
-    margin-top: 10px;
-    font-family: "Arial";
-  }
+    p {
+      margin-top: 10px;
+      font-family: "Arial";
+    }
 
-  .result-box {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-    font-family: "Inter";
-    font-size: 18px;
-    border-radius: 5px;
-  }
+    .result-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-family: "Inter";
+      font-size: 18px;
+      border-radius: 5px;
+    }
 
-  .result-box:nth-child(1) {
-    background-color: #42aaff; /* цвет как у кнопки */
-    color: white; /* цвет текста */
-  }
+    .result-box:nth-child(1) {
+      background-color: #42aaff;
+      color: white;
+    }
 
-  video {
-    display: block;
-    margin: 0 auto;
-  }
+    video {
+      display: block;
+      margin: 0 auto;
+    }
 
-  .custom-drop-area {
-    border: 2px dashed #ccc;
-    padding: 20px;
-    margin: 20px auto;
-    border-radius: 5px;
-    font-size: 18px;
-    cursor: pointer; /* добавляем стиль для указания, что область поддерживает перетаскивание */
-  }
+    .custom-drop-area {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+    }
 
-  .custom-drop-area:hover {
-    background-color: #f0f0f0;
-  }
+    .custom-drop-area:hover {
+      background-color: #f0f0f0;
+    }
 
-  #video-name {
-    margin-top: 10px;
-    font-family: "Arial";
-  }
-
-</style>
+    #video-name {
+      margin-top: 10px;
+      font-family: "Arial";
+    }
+  </style>
 </head>
 <body>
   <h1>Распознавание действий человека по видео</h1>
-  <p>Данный сервис позволяет загружать видеофайлы<br> и с помощью искусственного интеллекта распознавать действия человека на нем.</p>
+  <p>Данный сервис позволяет загружать видеофайлы и с помощью искусственного интеллекта распознавать действия человека на нем.</p>
   <form id="upload-form" action="/upload-video/" method="post" enctype="multipart/form-data" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
     <div id="drop-area" class="custom-drop-area">
       Перетащите сюда видеофайл для загрузки
@@ -121,14 +120,18 @@
       var videoURL = URL.createObjectURL(file);
       video.src = videoURL;
       video.style.display = "block";
-      document.getElementById('video-name').innerText = input.files[0].name; // Показать имя файла под видео
+      document.getElementById('video-name').innerText = input.files[0].name;
+      var resultsDiv = document.getElementById('results');
+      if (resultsDiv.children.length > 0) {
+        resultsDiv.innerHTML = ''; // Очистить результаты
+      }
     }
-    
+
     function handleDragOver(event) {
       event.preventDefault();
       event.dataTransfer.dropEffect = "copy";
     }
-    
+
     function handleDrop(event) {
       event.preventDefault();
       var file = event.dataTransfer.files[0];
